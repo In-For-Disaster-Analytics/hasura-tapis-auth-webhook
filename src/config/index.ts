@@ -12,7 +12,7 @@ const config: Config = {
   jwksUri:
     process.env.TAPIS_JWKS_URI || 'https://tacc.tapis.io/v3/tenants/tacc',
   tokenIssuer:
-    process.env.TAPIS_TOKEN_ISSUER || 'https://tacc.tapis.io/v3/oauth2',
+    process.env.TAPIS_TOKEN_ISSUER || 'https://tacc.tapis.io/v3/tokens',
   environment: process.env.NODE_ENV || 'development',
   cacheMaxAge: parseInt(process.env.JWKS_CACHE_MAX_AGE || '86400000', 10), // 24 hours
   jwksRequestsPerMinute: parseInt(

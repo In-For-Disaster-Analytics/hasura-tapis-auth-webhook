@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
 import config from './config';
 import authService from './services/auth.service';
 import logger from './utils/logger';
+import { JWKSHandler } from './utils/jwks-handler';
 import {
   WebhookRequest,
   JWTPayload,
@@ -11,35 +11,13 @@ import {
   HealthCheckResponse,
 } from './types';
 
-const app = express();
+export const app = express();
 
-// Configure JWKS client for Tapis
-const client = jwksClient({
-  jwksUri: config.jwksUri,
-  cache: true,
-  cacheMaxAge: config.cacheMaxAge,
-  rateLimit: true,
-  jwksRequestsPerMinute: config.jwksRequestsPerMinute,
-});
+// Configure JWKS handler
+const jwksHandler = new JWKSHandler(config.jwksUri);
 
 // Middleware to parse JSON requests
 app.use(express.json());
-
-// Function to get the signing key from Tapis JWKS
-function getKey(header: jwt.JwtHeader, callback: jwt.SigningKeyCallback): void {
-  client.getSigningKey(header.kid, (err, key) => {
-    if (err) {
-      logger.error('Error getting signing key:', err);
-      return callback(err);
-    }
-    if (!key) {
-      logger.error('No signing key found');
-      return callback(new Error('No signing key found'));
-    }
-    const signingKey = key.getPublicKey();
-    callback(null, signingKey);
-  });
-}
 
 // Main webhook endpoint
 app.post(
@@ -58,10 +36,10 @@ app.post(
       // Extract the token
       const token = authHeader.replace('Bearer ', '');
 
-      // Verify the JWT token using Tapis JWKS
+      // Verify the JWT token using Tapis public key
       jwt.verify(
         token,
-        getKey,
+        jwksHandler.getKey,
         {
           issuer: config.tokenIssuer,
         },
@@ -107,14 +85,14 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   } as ErrorResponse);
 });
 
+let server: ReturnType<typeof app.listen> | null = null;
+
 export const startServer = () => {
   server = app.listen(config.port, () => {
     logger.info(`Tapis auth webhook listening on port ${config.port}`);
   });
   return server;
 };
-
-let server: ReturnType<typeof app.listen> | null = null;
 
 export const stopServer = () => {
   if (server) {
