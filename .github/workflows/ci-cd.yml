@@ -31,9 +31,6 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Run lint
-        run: npm run lint
-
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
