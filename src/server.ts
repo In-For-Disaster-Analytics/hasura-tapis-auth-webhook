@@ -32,6 +32,10 @@ function getKey(header: jwt.JwtHeader, callback: jwt.SigningKeyCallback): void {
       logger.error('Error getting signing key:', err);
       return callback(err);
     }
+    if (!key) {
+      logger.error('No signing key found');
+      return callback(new Error('No signing key found'));
+    }
     const signingKey = key.getPublicKey();
     callback(null, signingKey);
   });
@@ -103,7 +107,25 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   } as ErrorResponse);
 });
 
-// Start the server
-app.listen(config.port, () => {
-  logger.info(`Tapis auth webhook listening on port ${config.port}`);
-});
+export const startServer = () => {
+  server = app.listen(config.port, () => {
+    logger.info(`Tapis auth webhook listening on port ${config.port}`);
+  });
+  return server;
+};
+
+let server: ReturnType<typeof app.listen> | null = null;
+
+export const stopServer = () => {
+  if (server) {
+    server.close();
+    server = null;
+  }
+};
+
+// Only start the server if this file is run directly
+if (require.main === module) {
+  startServer();
+}
+
+export default app;
