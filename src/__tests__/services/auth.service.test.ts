@@ -9,56 +9,85 @@ describe('AuthService', () => {
   });
 
   describe('determineRole', () => {
-    it('should return admin role for admin account type', () => {
+    test('should return user role for user account type', () => {
       const token: JWTPayload = {
-        sub: 'user123',
-        tapis: {
-          account_type: 'admin',
-          tenant_id: 'tacc',
-        },
-      };
-
-      expect(authService.determineRole(token)).toBe('admin');
-    });
-
-    it('should return admin role for user with admin role', () => {
-      const token: JWTPayload = {
-        sub: 'user123',
-        tapis: {
-          roles: ['admin', 'user'],
-          tenant_id: 'tacc',
-        },
-      };
-
-      expect(authService.determineRole(token)).toBe('admin');
-    });
-
-    it('should return service role for service account type', () => {
-      const token: JWTPayload = {
-        sub: 'service123',
-        tapis: {
-          account_type: 'service',
-          tenant_id: 'tacc',
-        },
-      };
-
-      expect(authService.determineRole(token)).toBe('service');
-    });
-
-    it('should return user role as default', () => {
-      const token: JWTPayload = {
-        sub: 'user123',
-        tapis: {
-          tenant_id: 'tacc',
-        },
+        jti: 'test-jti',
+        iss: 'https://tacc.tapis.io/v3/tokens',
+        sub: 'testuser@tacc',
+        'tapis/tenant_id': 'tacc',
+        'tapis/token_type': 'access',
+        'tapis/delegation': false,
+        'tapis/delegation_sub': null,
+        'tapis/username': 'testuser',
+        'tapis/account_type': 'user',
+        'tapis/client_id': 'tacc.test.client',
+        'tapis/grant_type': 'authorization_code',
+        'tapis/redirect_uri': 'https://test.redirect',
+        'tapis/refresh_count': 0,
+        exp: 1739381904,
       };
 
       expect(authService.determineRole(token)).toBe('user');
     });
 
-    it('should handle undefined tapis claims', () => {
+    test('should return admin role for admin account type', () => {
       const token: JWTPayload = {
-        sub: 'user123',
+        jti: 'test-jti',
+        iss: 'https://tacc.tapis.io/v3/tokens',
+        sub: 'admin@tacc',
+        'tapis/tenant_id': 'tacc',
+        'tapis/token_type': 'access',
+        'tapis/delegation': false,
+        'tapis/delegation_sub': null,
+        'tapis/username': 'admin',
+        'tapis/account_type': 'admin',
+        'tapis/client_id': 'tacc.test.client',
+        'tapis/grant_type': 'authorization_code',
+        'tapis/redirect_uri': 'https://test.redirect',
+        'tapis/refresh_count': 0,
+        exp: 1739381904,
+      };
+
+      expect(authService.determineRole(token)).toBe('admin');
+    });
+
+    test('should return service role for service account type', () => {
+      const token: JWTPayload = {
+        jti: 'test-jti',
+        iss: 'https://tacc.tapis.io/v3/tokens',
+        sub: 'service@tacc',
+        'tapis/tenant_id': 'tacc',
+        'tapis/token_type': 'access',
+        'tapis/delegation': false,
+        'tapis/delegation_sub': null,
+        'tapis/username': 'service',
+        'tapis/account_type': 'service',
+        'tapis/client_id': 'tacc.test.client',
+        'tapis/grant_type': 'authorization_code',
+        'tapis/redirect_uri': 'https://test.redirect',
+        'tapis/refresh_count': 0,
+        exp: 1739381904,
+      };
+
+      expect(authService.determineRole(token)).toBe('service');
+    });
+
+    test('should default to user role for unknown account type', () => {
+      const token: JWTPayload = {
+        jti: 'test-jti',
+        iss: 'https://tacc.tapis.io/v3/tokens',
+        sub: 'unknown@tacc',
+        'tapis/tenant_id': 'tacc',
+        'tapis/token_type': 'access',
+        'tapis/delegation': false,
+        'tapis/delegation_sub': null,
+        'tapis/username': 'unknown',
+        'tapis/account_type': 'unknown',
+        'tapis/client_id': 'tacc.test.client',
+        'tapis/grant_type': 'authorization_code',
+        'tapis/redirect_uri': 'https://test.redirect',
+        'tapis/refresh_count': 0,
+        exp: 1739381904,
       };
 
       expect(authService.determineRole(token)).toBe('user');
@@ -66,54 +95,30 @@ describe('AuthService', () => {
   });
 
   describe('createSessionVariables', () => {
-    it('should create session variables with all available claims', () => {
+    test('should create session variables from token', () => {
       const token: JWTPayload = {
-        sub: 'user123',
-        tapis: {
-          account_type: 'admin',
-          tenant_id: 'tacc',
-          roles: ['admin'],
-        },
-      };
-
-      const sessionVars = authService.createSessionVariables(token);
-
-      expect(sessionVars).toEqual({
-        'X-Hasura-Role': 'admin',
-        'X-Hasura-User-Id': 'user123',
-        'X-Hasura-Tenant-Id': 'tacc',
-        'X-Hasura-Account-Type': 'admin',
-        'Cache-Control': 'max-age=600',
-      });
-    });
-
-    it('should handle missing optional claims', () => {
-      const token: JWTPayload = {
-        sub: 'user123',
+        jti: 'dea885fc-b59d-4dd4-9c6a-60b28406e7b2',
+        iss: 'https://tacc.tapis.io/v3/tokens',
+        sub: 'mosorio@tacc',
+        'tapis/tenant_id': 'tacc',
+        'tapis/token_type': 'access',
+        'tapis/delegation': false,
+        'tapis/delegation_sub': null,
+        'tapis/username': 'mosorio',
+        'tapis/account_type': 'user',
+        'tapis/client_id': 'tacc.CIC.tokenapp',
+        'tapis/grant_type': 'authorization_code',
+        'tapis/redirect_uri': 'https://tacc.tapis.io/v3/oauth2/webapp/callback',
+        'tapis/refresh_count': 0,
+        exp: 1739381904,
       };
 
       const sessionVars = authService.createSessionVariables(token);
 
       expect(sessionVars).toEqual({
         'X-Hasura-Role': 'user',
-        'X-Hasura-User-Id': 'user123',
-        'Cache-Control': 'max-age=600',
-      });
-    });
-
-    it('should use username if sub is not available', () => {
-      const token: JWTPayload = {
-        username: 'testuser',
-        tapis: {
-          tenant_id: 'tacc',
-        },
-      };
-
-      const sessionVars = authService.createSessionVariables(token);
-
-      expect(sessionVars).toEqual({
-        'X-Hasura-Role': 'user',
-        'X-Hasura-User-Id': 'testuser',
+        'X-Hasura-User-Id': 'mosorio@tacc',
+        'X-Hasura-Username': 'mosorio',
         'X-Hasura-Tenant-Id': 'tacc',
         'Cache-Control': 'max-age=600',
       });

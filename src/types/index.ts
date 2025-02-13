@@ -1,26 +1,31 @@
 // Tapis token claims interface
 export interface TapisClaims {
-  tenant_id?: string;
-  account_type?: string;
-  roles?: string[];
-  username?: string;
+  'tapis/tenant_id': string;
+  'tapis/token_type': string;
+  'tapis/delegation': boolean;
+  'tapis/delegation_sub': string | null;
+  'tapis/username': string;
+  'tapis/account_type': string;
+  'tapis/client_id': string;
+  'tapis/grant_type': string;
+  'tapis/redirect_uri': string;
+  'tapis/refresh_count': number;
 }
 
 // JWT token payload interface
-export interface JWTPayload {
-  sub?: string;
-  username?: string;
-  tapis?: TapisClaims;
-  exp?: number;
-  iat?: number;
+export interface JWTPayload extends TapisClaims {
+  jti: string;
+  iss: string;
+  sub: string;
+  exp: number;
 }
 
 // Hasura session variables interface
 export interface HasuraSessionVariables {
   'X-Hasura-Role': string;
   'X-Hasura-User-Id': string;
-  'X-Hasura-Tenant-Id'?: string;
-  'X-Hasura-Account-Type'?: string;
+  'X-Hasura-Username': string;
+  'X-Hasura-Tenant-Id': string;
   'Cache-Control'?: string;
 }
 

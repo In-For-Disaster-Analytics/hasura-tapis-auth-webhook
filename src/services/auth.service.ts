@@ -4,22 +4,22 @@ import logger from '../utils/logger';
 export class AuthService {
   public determineRole(decodedToken: JWTPayload): string {
     try {
-      // Check for admin privileges in Tapis claims
-      if (
-        decodedToken.tapis?.account_type === 'admin' ||
-        (decodedToken.tapis?.roles &&
-          decodedToken.tapis.roles.includes('admin'))
-      ) {
-        return 'admin';
-      }
+      const accountType = decodedToken['tapis/account_type'];
+      console.log('accountType', accountType);
 
-      // Check for service account
-      if (decodedToken.tapis?.account_type === 'service') {
-        return 'service';
+      switch (accountType) {
+        case 'admin':
+          return 'admin';
+        case 'service':
+          return 'service';
+        case 'user':
+          return 'user';
+        default:
+          logger.warn(
+            `Unknown account type: ${accountType}, defaulting to user role`,
+          );
+          return 'user';
       }
-
-      // Default role
-      return 'user';
     } catch (error) {
       logger.error('Error determining role:', error);
       return 'user'; // Default to user role on error
@@ -31,20 +31,11 @@ export class AuthService {
   ): HasuraSessionVariables {
     const sessionVars: HasuraSessionVariables = {
       'X-Hasura-Role': this.determineRole(decodedToken),
-      'X-Hasura-User-Id':
-        decodedToken.sub || decodedToken.username || 'anonymous',
+      'X-Hasura-User-Id': decodedToken.sub,
+      'X-Hasura-Username': decodedToken['tapis/username'],
+      'X-Hasura-Tenant-Id': decodedToken['tapis/tenant_id'],
       'Cache-Control': 'max-age=600',
     };
-
-    // Add tenant ID if available
-    if (decodedToken.tapis?.tenant_id) {
-      sessionVars['X-Hasura-Tenant-Id'] = decodedToken.tapis.tenant_id;
-    }
-
-    // Add account type if available
-    if (decodedToken.tapis?.account_type) {
-      sessionVars['X-Hasura-Account-Type'] = decodedToken.tapis.account_type;
-    }
 
     return sessionVars;
   }
