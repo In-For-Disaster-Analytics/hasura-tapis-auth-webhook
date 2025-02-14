@@ -24,15 +24,15 @@ app.post(
   '/auth-webhook',
   async (req: Request<{}, {}, WebhookRequest>, res: Response) => {
     try {
-      const authHeader = req.body.headers?.authorization;
-
+      console.log('req.', req.body);
+      const authHeader = req.body.headers.Authorization;
       if (!authHeader) {
         // Return anonymous role for unauthenticated requests
+        console.log('No auth header');
         return res.status(200).json({
           'X-Hasura-Role': 'anonymous',
         });
       }
-
       // Extract the token
       const token = authHeader.replace('Bearer ', '');
 

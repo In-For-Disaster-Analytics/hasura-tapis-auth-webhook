@@ -31,7 +31,7 @@ export interface HasuraSessionVariables {
 
 // Webhook request headers interface
 export interface WebhookRequestHeaders {
-  authorization?: string;
+  Authorization?: string;
   [key: string]: string | undefined;
 }
 

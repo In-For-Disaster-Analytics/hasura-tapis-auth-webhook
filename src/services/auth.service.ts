@@ -5,7 +5,7 @@ export class AuthService {
   public determineRole(decodedToken: JWTPayload): string {
     try {
       const accountType = decodedToken['tapis/account_type'];
-      console.log('accountType', accountType);
+      logger.info('accountType', accountType);
 
       switch (accountType) {
         case 'admin':

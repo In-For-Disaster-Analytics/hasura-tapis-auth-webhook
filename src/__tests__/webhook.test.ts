@@ -33,7 +33,7 @@ describe('Webhook Endpoints', () => {
       'tapis/username': 'mosorio',
       'tapis/account_type': 'user',
       'tapis/client_id': 'tacc.CIC.tokenapp',
-      'tapis/grant_type': 'authorization_code',
+      'tapis/grant_type': 'Authorization_code',
       'tapis/redirect_uri': 'https://tacc.tapis.io/v3/oauth2/webapp/callback',
       'tapis/refresh_count': 0,
       exp: 1739381904,
@@ -46,7 +46,7 @@ describe('Webhook Endpoints', () => {
       'tapis/account_type': 'admin',
     };
 
-    it('should return anonymous role when no authorization header is present', async () => {
+    it('should return anonymous role when no Authorization header is present', async () => {
       const response = await request(app).post('/auth-webhook').send({
         headers: {},
       });
@@ -68,7 +68,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer invalid-token',
+            Authorization: 'Bearer invalid-token',
           },
         });
 
@@ -89,7 +89,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer valid-token',
+            Authorization: 'Bearer valid-token',
           },
         });
 
@@ -114,7 +114,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer admin-token',
+            Authorization: 'Bearer admin-token',
           },
         });
 
@@ -139,7 +139,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer expired-token',
+            Authorization: 'Bearer expired-token',
           },
         });
 
@@ -160,7 +160,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer malformed-token',
+            Authorization: 'Bearer malformed-token',
           },
         });
 
@@ -179,7 +179,7 @@ describe('Webhook Endpoints', () => {
         .post('/auth-webhook')
         .send({
           headers: {
-            authorization: 'Bearer valid-token',
+            Authorization: 'Bearer valid-token',
           },
         });
 

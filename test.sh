@@ -35,7 +35,7 @@ echo -e "\n2. Testing auth webhook with Tapis token..."
 JSON_PAYLOAD=$(cat <<EOF
 {
   "headers": {
-    "authorization": "Bearer ${TACC_ACCESS_TOKEN}"
+    "Authorization": "Bearer invalid-token"
   }
 }
 EOF
