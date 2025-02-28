@@ -31,7 +31,7 @@ export class AuthService {
   ): HasuraSessionVariables {
     const sessionVars: HasuraSessionVariables = {
       'X-Hasura-Role': this.determineRole(decodedToken),
-      'X-Hasura-User-Id': decodedToken.sub,
+      'X-Hasura-User-Id': decodedToken['tapis/username'],
       'X-Hasura-Username': decodedToken['tapis/username'],
       'X-Hasura-Tenant-Id': decodedToken['tapis/tenant_id'],
       'Cache-Control': 'max-age=600',

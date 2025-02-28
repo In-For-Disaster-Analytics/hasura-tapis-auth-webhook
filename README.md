@@ -140,7 +140,7 @@ The original request headers from Hasura will be forwarded.
 ```json
 {
   "X-Hasura-Role": "user",
-  "X-Hasura-User-Id": "username@tacc",
+  "X-Hasura-User-Id": "username",
   "X-Hasura-Username": "username",
   "X-Hasura-Tenant-Id": "tacc",
   "Cache-Control": "max-age=600"

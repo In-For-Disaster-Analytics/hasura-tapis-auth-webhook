@@ -13,7 +13,7 @@ describe('AuthService', () => {
       const token: JWTPayload = {
         jti: 'test-jti',
         iss: 'https://tacc.tapis.io/v3/tokens',
-        sub: 'testuser@tacc',
+        sub: 'testuser',
         'tapis/tenant_id': 'tacc',
         'tapis/token_type': 'access',
         'tapis/delegation': false,
@@ -34,7 +34,7 @@ describe('AuthService', () => {
       const token: JWTPayload = {
         jti: 'test-jti',
         iss: 'https://tacc.tapis.io/v3/tokens',
-        sub: 'admin@tacc',
+        sub: 'admin',
         'tapis/tenant_id': 'tacc',
         'tapis/token_type': 'access',
         'tapis/delegation': false,
@@ -55,7 +55,7 @@ describe('AuthService', () => {
       const token: JWTPayload = {
         jti: 'test-jti',
         iss: 'https://tacc.tapis.io/v3/tokens',
-        sub: 'service@tacc',
+        sub: 'service',
         'tapis/tenant_id': 'tacc',
         'tapis/token_type': 'access',
         'tapis/delegation': false,
@@ -76,7 +76,7 @@ describe('AuthService', () => {
       const token: JWTPayload = {
         jti: 'test-jti',
         iss: 'https://tacc.tapis.io/v3/tokens',
-        sub: 'unknown@tacc',
+        sub: 'unknown',
         'tapis/tenant_id': 'tacc',
         'tapis/token_type': 'access',
         'tapis/delegation': false,
@@ -99,7 +99,7 @@ describe('AuthService', () => {
       const token: JWTPayload = {
         jti: 'dea885fc-b59d-4dd4-9c6a-60b28406e7b2',
         iss: 'https://tacc.tapis.io/v3/tokens',
-        sub: 'mosorio@tacc',
+        sub: 'mosorio',
         'tapis/tenant_id': 'tacc',
         'tapis/token_type': 'access',
         'tapis/delegation': false,
@@ -117,7 +117,7 @@ describe('AuthService', () => {
 
       expect(sessionVars).toEqual({
         'X-Hasura-Role': 'user',
-        'X-Hasura-User-Id': 'mosorio@tacc',
+        'X-Hasura-User-Id': 'mosorio',
         'X-Hasura-Username': 'mosorio',
         'X-Hasura-Tenant-Id': 'tacc',
         'Cache-Control': 'max-age=600',

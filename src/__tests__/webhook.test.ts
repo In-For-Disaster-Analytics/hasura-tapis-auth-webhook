@@ -25,7 +25,7 @@ describe('Webhook Endpoints', () => {
     const mockValidToken: JWTPayload = {
       jti: 'dea885fc-b59d-4dd4-9c6a-60b28406e7b2',
       iss: 'https://tacc.tapis.io/v3/tokens',
-      sub: 'mosorio@tacc',
+      sub: 'mosorio',
       'tapis/tenant_id': 'tacc',
       'tapis/token_type': 'access',
       'tapis/delegation': false,
@@ -41,7 +41,7 @@ describe('Webhook Endpoints', () => {
 
     const mockAdminToken: JWTPayload = {
       ...mockValidToken,
-      sub: 'admin@tacc',
+      sub: 'admin',
       'tapis/username': 'admin',
       'tapis/account_type': 'admin',
     };
@@ -96,7 +96,7 @@ describe('Webhook Endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         'X-Hasura-Role': 'user',
-        'X-Hasura-User-Id': 'mosorio@tacc',
+        'X-Hasura-User-Id': 'mosorio',
         'X-Hasura-Username': 'mosorio',
         'X-Hasura-Tenant-Id': 'tacc',
         'Cache-Control': 'max-age=600',
@@ -121,7 +121,7 @@ describe('Webhook Endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         'X-Hasura-Role': 'admin',
-        'X-Hasura-User-Id': 'admin@tacc',
+        'X-Hasura-User-Id': 'admin',
         'X-Hasura-Username': 'admin',
         'X-Hasura-Tenant-Id': 'tacc',
         'Cache-Control': 'max-age=600',
@@ -207,7 +207,7 @@ describe('Webhook Endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         'X-Hasura-Role': 'user',
-        'X-Hasura-User-Id': 'mosorio@tacc',
+        'X-Hasura-User-Id': 'mosorio',
         'X-Hasura-Username': 'mosorio',
         'X-Hasura-Tenant-Id': 'tacc',
         'Cache-Control': 'max-age=600',
