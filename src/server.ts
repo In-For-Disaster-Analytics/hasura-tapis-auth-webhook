@@ -25,7 +25,9 @@ app.post(
   async (req: Request<{}, {}, WebhookRequest>, res: Response) => {
     try {
       console.log('req.', req.body);
-      const authHeader = req.body.headers.Authorization;
+      // Check for both authorization and Authorization headers
+      const authHeader =
+        req.body.headers.Authorization || req.body.headers.authorization;
       if (!authHeader) {
         // Return anonymous role for unauthenticated requests
         console.log('No auth header');

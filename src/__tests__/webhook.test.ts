@@ -188,6 +188,31 @@ describe('Webhook Endpoints', () => {
         message: 'Internal server error',
       });
     });
+
+    it('should handle lowercase authorization header', async () => {
+      (jwt.verify as jest.Mock).mockImplementation(
+        (token, getKey, options, callback) => {
+          callback(null, mockValidToken);
+        },
+      );
+
+      const response = await request(app)
+        .post('/auth-webhook')
+        .send({
+          headers: {
+            authorization: 'Bearer valid-token',
+          },
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        'X-Hasura-Role': 'user',
+        'X-Hasura-User-Id': 'mosorio@tacc',
+        'X-Hasura-Username': 'mosorio',
+        'X-Hasura-Tenant-Id': 'tacc',
+        'Cache-Control': 'max-age=600',
+      });
+    });
   });
 
   describe('GET /health', () => {
